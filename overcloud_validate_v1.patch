@@ -1,0 +1,50 @@
+--- /usr/lib/python2.7/site-packages/rdomanager_oscplugin/v1/overcloud_validate.py.orig	2015-10-08 13:46:54.413521858 +0200
++++ /usr/lib/python2.7/site-packages/rdomanager_oscplugin/v1/overcloud_validate.py	2015-10-08 14:08:04.132309355 +0200
+@@ -35,16 +35,20 @@
+             os.mkdir(self.tempest_run_dir)
+ 
+     def _run_tempest(self, overcloud_auth_url, overcloud_admin_password,
+-                     deployer_input, tempest_args, skipfile):
++                     deployer_input, tempest_args, skipfile, image):
+         os.chdir(self.tempest_run_dir)
+ 
+         if not deployer_input:
+             deployer_input = '/dev/null'
++        if image:
++            image_arg = '--image %s ' % image
++        else:
++            image_arg = ''
+ 
+         utils.run_shell('/usr/share/openstack-tempest-kilo/tools/'
+                         'configure-tempest-directory')
+         utils.run_shell('./tools/config_tempest.py --out etc/tempest.conf '
+-                        '--deployer-input %(partial_config_file)s '
++                        '--deployer-input %(partial_config_file)s %(image)s'
+                         '--debug --create '
+                         'identity.uri %(auth_url)s '
+                         'compute.allow_tenant_isolation true '
+@@ -58,7 +62,8 @@
+                         'scenario.ssh_user cirros' %
+                         {'partial_config_file': deployer_input,
+                          'auth_url': overcloud_auth_url,
+-                         'admin_password': overcloud_admin_password})
++                         'admin_password': overcloud_admin_password,
++                         'image': image_arg})
+ 
+         args = ['./tools/run-tests.sh', ]
+ 
+@@ -77,6 +82,7 @@
+         parser.add_argument('--deployer-input')
+         parser.add_argument('--tempest-args')
+         parser.add_argument('--skipfile')
++        parser.add_argument('--image')
+ 
+         return parser
+ 
+@@ -88,4 +94,5 @@
+                           parsed_args.overcloud_admin_password,
+                           parsed_args.deployer_input,
+                           parsed_args.tempest_args,
+-                          parsed_args.skipfile)
++                          parsed_args.skipfile,
++                          parsed_args.image)
