@@ -78,11 +78,10 @@ parameter_defaults:
   # Define the DNS servers (maximum 2) for the overcloud nodes
   DnsServers: ["10.26.205.34", "10.26.205.35"]
 
-  NeutronExternalNetworkBridge: "br-ex"
+  # Set to "br-ex" if using floating IPs on native VLAN on bridge br-ex
+  NeutronExternalNetworkBridge: "''"
 
-  # Customize bonding options if required
-  CHANGEME!
-  BondInterfaceOvsOptions: "bond_mode=balance-tcp lacp=active other-config:lacp-fallback-ab=true"
+  BondInterfaceOvsOptions: "bond_mode=loadbalance"
 
 parameters:
   ServiceNetMap:
