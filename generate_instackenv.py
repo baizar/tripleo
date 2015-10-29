@@ -77,12 +77,16 @@ def idrac_nodes():
 def generate_drac_nodes():
   """Generate information about iDRAC nodes."""
 
+  with open('.idrac_password', 'r') as f:
+    idrac_password = f.read().strip()
+  print idrac_password
+
   nodes = []
   for _, pm_addr, mac, vcpu, memory, disk in idrac_nodes():
     d = OrderedDict()
     d.update({'pm_addr': str(pm_addr)})
     d.update({'pm_user': 'root'})
-    d.update({'pm_password': '$deng2015'})
+    d.update({'pm_password': idrac_password})
     d.update({'pm_type': 'pxe_drac'})
     d.update({'mac': mac})
     d.update({'cpu': str(vcpu)})
