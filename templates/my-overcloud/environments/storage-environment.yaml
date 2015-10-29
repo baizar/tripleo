@@ -3,6 +3,11 @@
 ## Nova ephemeral storage.
 parameters:
 
+  #### SWIFT SETTINGS ####
+
+  ## Whether to have Swift storage on its dedicated nodes.
+  ControllerEnableSwiftStorage: false
+
   #### BACKEND SELECTION ####
 
   ## Whether to enable iscsi backend for Cinder.
