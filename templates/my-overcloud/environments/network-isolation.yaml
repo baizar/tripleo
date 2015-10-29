@@ -3,6 +3,10 @@
 # to that role) on these networks.
 resource_registry:
   OS::TripleO::Network::External: ../network/external.yaml
+  OS::TripleO::Network::Internet: ../network/internet.yaml
+  OS::TripleO::Network::Internodos: ../network/internodos.yml
+  OS::TripleO::Network::Backend: ../network/backend.yml
+  OS::TripleO::Network::Corporate: ../network/corporate.yml
   OS::TripleO::Network::InternalApi: ../network/internal_api.yaml
   OS::TripleO::Network::StorageMgmt: ../network/storage_mgmt.yaml
   OS::TripleO::Network::Storage: ../network/storage.yaml
