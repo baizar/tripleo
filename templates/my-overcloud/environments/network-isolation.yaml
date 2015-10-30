@@ -22,6 +22,10 @@ resource_registry:
 
   # Port assignments for the controller role
   OS::TripleO::Controller::Ports::ExternalPort: ../network/ports/external.yaml
+  OS::TripleO::Controller::Ports::InternetPort: ../network/ports/internet.yaml
+  OS::TripleO::Controller::Ports::InternodosPort: ../network/ports/internodos.yaml
+  OS::TripleO::Controller::Ports::Backend: ../network/ports/backend.yaml
+  OS::TripleO::Controller::Ports::Corporate: ../network/ports/corporate.yaml
   OS::TripleO::Controller::Ports::InternalApiPort: ../network/ports/internal_api.yaml
   OS::TripleO::Controller::Ports::StoragePort: ../network/ports/storage.yaml
   OS::TripleO::Controller::Ports::StorageMgmtPort: ../network/ports/storage_mgmt.yaml
