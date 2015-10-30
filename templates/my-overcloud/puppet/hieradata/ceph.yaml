@@ -5,8 +5,30 @@ ceph::profile::params::osd_pool_default_size: 3
 ceph::profile::params::osd_pool_default_min_size: 1
 ceph::profile::params::osds:
 ceph::profile::params::osds:
-  '/dev/vdb':
-    journal: {}
+  '/dev/sdb':
+    journal: '/dev/sda5'
+  '/dev/sdc':
+    journal: '/dev/sdj5'
+  '/dev/sdd':
+    journal: '/dev/sda6'
+  '/dev/sde':
+    journal: '/dev/sdj6'
+  '/dev/sdf':
+    journal: '/dev/sda7'
+  '/dev/sdg':
+    journal: '/dev/sdj7'
+  '/dev/sdh':
+    journal: '/dev/sda8'
+  '/dev/sdi':
+    journal: '/dev/sdj8'
+  '/dev/sdk':
+    journal: '/dev/sda9'
+  '/dev/sdl':
+    journal: '/dev/sdj9'
+  '/dev/sdm':
+    journal: '/dev/sda10'
+  '/dev/sdn':
+    journal: '/dev/sdj10'
 ceph::profile::params::manage_repo: false
 ceph::profile::params::authentication_type: cephx
 
