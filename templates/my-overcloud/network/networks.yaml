@@ -7,18 +7,6 @@ resources:
   ExternalNetwork:
     type: OS::TripleO::Network::External
 
-  InternetNetwork:
-    type: OS::TripleO::Network::Internet
-
-  InternodosNetwork:
-    type: OS::TripleO::Network::Internodos
-
-  BackendNetwork:
-    type: OS::TripleO::Network::Backend
-
-  CorporateNetwork:
-    type: OS::TripleO::Network::Corporate
-
   InternalNetwork:
     type: OS::TripleO::Network::InternalApi
 

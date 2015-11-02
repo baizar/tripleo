@@ -1,6 +1,11 @@
 ## A Heat environment file which can be used to set up storage
 ## backends. Defaults to Ceph used as a backend for Cinder, Glance and
 ## Nova ephemeral storage.
+
+resource_registry:
+  # Wipe Ceph disks before deploying the Overcloud
+  OS::TripleO::NodeUserData: ../firstboot/ceph_wipe.yaml
+
 parameters:
 
   #### SWIFT SETTINGS ####

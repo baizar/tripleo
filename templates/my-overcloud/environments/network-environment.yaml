@@ -32,42 +32,11 @@ parameter_defaults:
   ExternalNetCidr: 192.168.246.0/23
   # Leave room for floating IPs in the External allocation pool
   ExternalAllocationPools: [{'start': '192.168.246.7', 'end': '192.168.247.254'}]
-  ExternalNetValueSpecs:
-    'provider:physical_network': 'datacentre'
-    'provider:network_type': 'vlan'
-    'provider:segmentation_id': {get_param: ExternalNetworkVlanID}
 
   InternetNetworkVlanID: 3221
-  InternetNetCidr: 81.45.17.0/25
-  InternetAllocationPools: [{'start': '81.45.17.7', 'end': '81.45.17.127'}]
-  InternetNetValueSpecs:
-    'provider:physical_network': 'datacentre'
-    'provider:network_type': 'vlan'
-    'provider:segmentation_id': {get_param: InternetNetworkVlanID}
-
   InternodosNetworkVlanID: 3228
-  InternodosNetCidr: 10.25.218.160/27
-  InternodosAllocationPools: [{'start': '10.25.218.167', 'end': '10.25.218.190'}]
-  InternodosNetValueSpecs:
-    'provider:physical_network': 'datacentre'
-    'provider:network_type': 'vlan'
-    'provider:segmentation_id': {get_param: InternodosNetworkVlanID}
-
   BackendNetworkVlanID: 3712
-  BackendNetCidr: 172.24.8.0/22
-  BackendAllocationPools: [{'start': '172.24.8.7', 'end': '172.24.11.254'}]
-  BackendNetValueSpecs:
-    'provider:physical_network': 'datacentre'
-    'provider:network_type': 'vlan'
-    'provider:segmentation_id': {get_param: BackendNetworkVlanID}
-
   CorporateNetworkVlanID: 3274
-  CorporateNetCidr: 10.95.175.0/24
-  CorporateAllocationPools: [{'start': '10.95.175.7', 'end': '10.95.175.254'}]
-  CorporateNetValueSpecs:
-    'provider:physical_network': 'datacentre'
-    'provider:network_type': 'vlan'
-    'provider:segmentation_id': {get_param: CorporateNetworkVlanID}
 
   # Gateway router for the provisioning network (or Undercloud IP)
   ControlPlaneDefaultRoute: 172.24.12.1

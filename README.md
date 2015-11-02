@@ -6,6 +6,7 @@ The command used to deploy this overcloud:
 ```
 stack@director:~$ cd /home/stack/
 stack@director:~$ source ~/stackrc
+stack@director:~$ neutron quota-update --port -1
 ```
 
 Nova always requires a flavor to match; and OSP director attempts to use a hard coded flavor known as "baremetal". The specifications don't have to be exact to our overcloud nodes, but at the least they must be satisfied by our nodes capabilities:
@@ -31,7 +32,7 @@ done
 ## Compute
 
 ```
-stack@esah-ostt-uc01p:~$ openstack flavor create --id auto --ram 196608 --disk 2000 --vcpus 2 compute
+stack@esah-ostt-uc01p:~$ openstack flavor create --id auto --ram 196608 --disk 2000 --vcpus 24 compute
 stack@esah-ostt-uc01p:~$ openstack flavor set --property "cpu_arch"="x86_64" --property "capabilities:boot_option"="local" --property "capabilities:profile"="compute" compute
 
 for NODE in a31392bd-3b61-4183-8220-aff1369c44a4 91af555a-2866-4904-adf4-a3f48b130c73 10fe46f9-3403-4160-962f-8ae384cd913c; do
@@ -64,5 +65,5 @@ done
 # Deploy
 
 ```
-stack@director:~$ openstack overcloud deploy --templates ~/templates/my-overcloud -e ~/templates/my-overcloud/environments/network-isolation.yaml -e ~/templates/my-overcloud/environments/network-environment.yml -e ~/templates/my-overcloud/environments/storage-environment.yaml --control-scale 3 --compute-scale 1 --ceph-storage-scale 3 --control-flavor control --compute-flavor compute --ceph-storage-flavor ceph-storage --ntp-server 10.26.235.251 --neutron-network-type vxlan --neutron-tunnel-types vxlan
+stack@director:~$ openstack overcloud deploy --templates ~/templates/my-overcloud -e ~/templates/my-overcloud/environments/network-isolation.yaml -e ~/templates/my-overcloud/environments/network-environment.yaml -e ~/templates/my-overcloud/environments/storage-environment.yaml --control-scale 3 --compute-scale 3 --ceph-storage-scale 3 --swift-storage-scale 3 --control-flavor control --compute-flavor compute --ceph-storage-flavor ceph-storage --swift-storage-flavor swift-storage --ntp-server 10.26.235.251 --neutron-network-type vxlan --neutron-tunnel-types vxlan
 ```

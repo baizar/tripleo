@@ -3,10 +3,6 @@
 # to that role) on these networks.
 resource_registry:
   OS::TripleO::Network::External: ../network/external.yaml
-  OS::TripleO::Network::Internet: ../network/internet.yaml
-  OS::TripleO::Network::Internodos: ../network/internodos.yaml
-  OS::TripleO::Network::Backend: ../network/backend.yaml
-  OS::TripleO::Network::Corporate: ../network/corporate.yaml
   OS::TripleO::Network::InternalApi: ../network/internal_api.yaml
   OS::TripleO::Network::StorageMgmt: ../network/storage_mgmt.yaml
   OS::TripleO::Network::Storage: ../network/storage.yaml
@@ -22,10 +18,6 @@ resource_registry:
 
   # Port assignments for the controller role
   OS::TripleO::Controller::Ports::ExternalPort: ../network/ports/external.yaml
-  OS::TripleO::Controller::Ports::InternetPort: ../network/ports/internet.yaml
-  OS::TripleO::Controller::Ports::InternodosPort: ../network/ports/internodos.yaml
-  OS::TripleO::Controller::Ports::Backend: ../network/ports/backend.yaml
-  OS::TripleO::Controller::Ports::Corporate: ../network/ports/corporate.yaml
   OS::TripleO::Controller::Ports::InternalApiPort: ../network/ports/internal_api.yaml
   OS::TripleO::Controller::Ports::StoragePort: ../network/ports/storage.yaml
   OS::TripleO::Controller::Ports::StorageMgmtPort: ../network/ports/storage_mgmt.yaml
