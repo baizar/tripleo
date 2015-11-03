@@ -24,3 +24,14 @@
 +kernel http://{{local-ip}}:8088/discovery.kernel discoverd_callback_url=http://{{local-ip}}:5050/v1/continue RUNBENCH={{discovery.runbench}} ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${net0/mac}
  initrd http://{{local-ip}}:8088/discovery.ramdisk
  boot
+--- /usr/lib/python2.7/site-packages/ironic/drivers/modules/ipxe_config.template.orig	2015-11-03 15:44:27.387000000 +0000
++++ /usr/lib/python2.7/site-packages/ironic/drivers/modules/ipxe_config.template	2015-11-03 15:44:34.815000000 +0000
+@@ -5,7 +5,7 @@
+ goto deploy
+ 
+ :deploy
+-kernel {{ pxe_options.deployment_aki_path }} selinux=0 disk={{ pxe_options.disk }} iscsi_target_iqn={{ pxe_options.iscsi_target_iqn }} deployment_id={{ pxe_options.deployment_id }} deployment_key={{ pxe_options.deployment_key }} ironic_api_url={{ pxe_options.ironic_api_url }} troubleshoot=0 text {{ pxe_options.pxe_append_params|default("", true) }} boot_option={{ pxe_options.boot_option }} ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${mac} {% if pxe_options.root_device %}root_device={{ pxe_options.root_device }}{% endif %} ipa-api-url={{ pxe_options['ipa-api-url'] }} ipa-driver-name={{ pxe_options['ipa-driver-name'] }} coreos.configdrive=0
++kernel {{ pxe_options.deployment_aki_path }} selinux=0 disk={{ pxe_options.disk }} iscsi_target_iqn={{ pxe_options.iscsi_target_iqn }} deployment_id={{ pxe_options.deployment_id }} deployment_key={{ pxe_options.deployment_key }} ironic_api_url={{ pxe_options.ironic_api_url }} troubleshoot=0 text {{ pxe_options.pxe_append_params|default("", true) }} boot_option={{ pxe_options.boot_option }} ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${net0/mac} {% if pxe_options.root_device %}root_device={{ pxe_options.root_device }}{% endif %} ipa-api-url={{ pxe_options['ipa-api-url'] }} ipa-driver-name={{ pxe_options['ipa-driver-name'] }} coreos.configdrive=0
+ 
+ initrd {{ pxe_options.deployment_ari_path }}
+ boot
