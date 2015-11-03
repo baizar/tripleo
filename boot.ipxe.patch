@@ -1,0 +1,26 @@
+--- /usr/lib/python2.7/site-packages/ironic/drivers/modules/boot.ipxe.orig	2015-11-03 10:22:42.236000000 +0000
++++ /usr/lib/python2.7/site-packages/ironic/drivers/modules/boot.ipxe	2015-11-03 10:22:53.181000000 +0000
+@@ -1,10 +1,10 @@
+ #!ipxe
+ 
+ # load the MAC-specific file or fail if it's not found
+-chain pxelinux.cfg/${mac:hexhyp} || goto error_no_config
++chain pxelinux.cfg/${net0/mac:hexhyp} || goto error_no_config
+ 
+ :error_no_config
+-echo PXE boot failed. No configuration found for MAC ${mac}
++echo PXE boot failed. No configuration found for MAC ${net0/mac}
+ echo Press any key to reboot...
+ prompt --timeout 180
+ reboot
+
+--- /usr/share/instack-undercloud/ironic-discoverd/os-apply-config/httpboot/discoverd.ipxe.orig	2015-11-03 10:25:23.726000000 +0000
++++ /usr/share/instack-undercloud/ironic-discoverd/os-apply-config/httpboot/discoverd.ipxe	2015-11-03 10:25:33.301000000 +0000
+@@ -2,6 +2,6 @@
+ 
+ dhcp
+ 
+-kernel http://{{local-ip}}:8088/discovery.kernel discoverd_callback_url=http://{{local-ip}}:5050/v1/continue RUNBENCH={{discovery.runbench}} ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${mac}
++kernel http://{{local-ip}}:8088/discovery.kernel discoverd_callback_url=http://{{local-ip}}:5050/v1/continue RUNBENCH={{discovery.runbench}} ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${net0/mac}
+ initrd http://{{local-ip}}:8088/discovery.ramdisk
+ boot
