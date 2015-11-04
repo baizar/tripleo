@@ -6,38 +6,51 @@
 # environment files we should think about using it here to automatically
 # include network-isolation.yaml.
 resource_registry:
-  OS::TripleO::Compute::Net::SoftwareConfig: ../network/config/multiple-nic-vlans/compute.yaml
-  OS::TripleO::Controller::Net::SoftwareConfig: ../network/config/multiple-nic-vlans/controller.yaml
-  OS::TripleO::CephStorage::Net::SoftwareConfig: ../network/config/multiple-nic-vlans/ceph-storage.yaml
+  OS::TripleO::Compute::Net::SoftwareConfig: ../network/config/compute.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: ../network/config/controller.yaml
+  OS::TripleO::CephStorage::Net::SoftwareConfig: ../network/config/ceph-storage.yaml
+  OS::TripleO::SwiftStorage::Net::SoftwareConfig: ../network/config/swift-storage.yaml
 
 parameter_defaults:
-  InternalApiNetCidr: 172.16.0.0/24
-  TenantNetCidr: 172.17.0.0/24
-  StorageNetCidr: 172.18.0.0/24
-  StorageMgmtNetCidr: 172.19.0.0/24
-  ExternalNetCidr: 192.168.122.0/24
-  InternalApiAllocationPools: [{'start': '172.16.0.10', 'end': '172.16.0.200'}]
-  TenantAllocationPools: [{'start': '172.17.0.10', 'end': '172.17.0.200'}]
-  StorageAllocationPools: [{'start': '172.18.0.10', 'end': '172.18.0.200'}]
-  StorageMgmtAllocationPools: [{'start': '172.19.0.10', 'end': '172.19.0.200'}]
+  InternalApiNetworkVlanID: 3223
+  InternalApiNetCidr: 172.24.13.0/24
+  InternalApiAllocationPools: [{'start': '172.24.13.7', 'end': '172.24.13.30'}]
+
+  TenantNetworkVlanID: 3225
+  TenantNetCidr: 172.16.3.0/24
+  TenantAllocationPools: [{'start': '172.16.3.7', 'end': '172.16.3.30'}]
+
+  StorageNetworkVlanID: 3224
+  StorageNetCidr: 192.168.248.0/24
+  StorageAllocationPools: [{'start': '192.168.248.7', 'end': '192.168.248.30'}]
+
+  StorageMgmtNetworkVlanID: 3218
+  StorageMgmtNetCidr: 192.168.245.0/24
+  StorageMgmtAllocationPools: [{'start': '192.168.245.7', 'end': '192.168.245.30'}]
+
+  ExternalNetworkVlanID: 3222
+  ExternalNetCidr: 192.168.246.0/23
   # Leave room for floating IPs in the External allocation pool
-  ExternalAllocationPools: [{'start': '192.168.122.10', 'end': '192.168.122.50'}]
-  # Set to the router gateway on the external network
-  ExternalInterfaceDefaultRoute: 192.168.122.1
+  ExternalAllocationPools: [{'start': '192.168.246.7', 'end': '192.168.247.254'}]
+
+  InternetNetworkVlanID: 3221
+  InternodosNetworkVlanID: 3228
+  BackendNetworkVlanID: 3712
+  CorporateNetworkVlanID: 3274
+
   # Gateway router for the provisioning network (or Undercloud IP)
-  ControlPlaneDefaultRoute: 192.0.2.254
+  ControlPlaneDefaultRoute: 172.24.12.1
+
   # The IP address of the EC2 metadata server. Generally the IP of the Undercloud
-  EC2MetadataIp: 192.0.2.1
+  EC2MetadataIp: 172.24.12.3
+
   # Define the DNS servers (maximum 2) for the overcloud nodes
-  DnsServers: ["8.8.8.8","8.8.4.4"]
-  InternalApiNetworkVlanID: 201
-  StorageNetworkVlanID: 202
-  StorageMgmtNetworkVlanID: 203
-  TenantNetworkVlanID: 204
-  ExternalNetworkVlanID: 100
-  NeutronExternalNetworkBridge: "br-isolated"
-  # Customize bonding options if required
-  BondInterfaceOvsOptions: "bond_mode=balance-tcp lacp=active other-config:lacp-fallback-ab=true"
+  DnsServers: ["10.26.205.34", "10.26.205.35"]
+
+  # Set to "br-ex" if using floating IPs on native VLAN on bridge br-ex
+  NeutronExternalNetworkBridge: "''"
+
+  BondInterfaceOvsOptions: "bond_mode=loadbalance"
 
 parameters:
   ServiceNetMap:

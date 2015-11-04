@@ -1,21 +1,13 @@
 heat_template_version: 2015-04-30
 
 description: >
-  Software Config to drive os-net-config to configure VLANs for the
-  ceph storage role.
+  Software Config to drive os-net-config with 2 bonded nics on a bridge
+  with a VLANs attached for the ceph storage role.
 
 parameters:
   ControlPlaneIp:
     default: ''
     description: IP address/subnet on the ctlplane network
-    type: string
-  ExternalIpSubnet:
-    default: ''
-    description: IP address/subnet on the external network
-    type: string
-  InternalApiIpSubnet:
-    default: ''
-    description: IP address/subnet on the internal API network
     type: string
   StorageIpSubnet:
     default: ''
@@ -24,10 +16,6 @@ parameters:
   StorageMgmtIpSubnet:
     default: ''
     description: IP address/subnet on the storage mgmt network
-    type: string
-  TenantIpSubnet:
-    default: ''
-    description: IP address/subnet on the tenant network
     type: string
   StorageNetworkVlanID:
     default: 30
@@ -62,9 +50,22 @@ resources:
           network_config:
             -
               type: ovs_bridge
-              name: br-storage
-              use_dhcp: false
-              dns_servers: {get_param: DnsServers}
+              name: br-bond0
+              members:
+                -
+                  type: ovs_bond
+                  name: team0
+                  use_dhcp: false
+                  bonding_options: "bond_mode=active-backup"
+                  dns_servers: {get_param: DnsServers}
+                  members:
+                    -
+                      type: interface
+                      name: nic3
+                      primary: true
+                    - 
+                      type: interface
+                      name: nic4
               addresses:
                 -
                   ip_netmask:
@@ -79,32 +80,36 @@ resources:
                 -
                   default: true
                   next_hop: {get_param: ControlPlaneDefaultRoute}
-              members:
-                -
-                  type: interface
-                  name: nic1
-                  primary: true
             -
               type: ovs_bridge
-              name: br-isolated
-              use_dhcp: true
+              name: br-bond1
               members:
                 -
-                  type: interface
-                  name: nic2
-                  primary: true
+                  type: ovs_bond
+                  name: team1
+                  ovs_options: "bond_mode=balance-slb"
+                  members:
+                    -
+                      type: interface
+                      name: nic1
+                      primary: true
+                    -
+                      type: interface
+                      name: nic2
                 -
                   type: vlan
+                  device: team1
                   vlan_id: {get_param: StorageNetworkVlanID}
                   addresses:
-                  -
-                    ip_netmask: {get_param: StorageIpSubnet}
+                    -
+                      ip_netmask: {get_param: StorageIpSubnet}
                 -
                   type: vlan
+                  device: team1
                   vlan_id: {get_param: StorageMgmtNetworkVlanID}
                   addresses:
-                  -
-                    ip_netmask: {get_param: StorageMgmtIpSubnet}
+                    -
+                      ip_netmask: {get_param: StorageMgmtIpSubnet}
 
 outputs:
   OS::stack_id:

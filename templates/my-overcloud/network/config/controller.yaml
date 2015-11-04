@@ -2,7 +2,7 @@ heat_template_version: 2015-04-30
 
 description: >
   Software Config to drive os-net-config with 2 bonded nics on a bridge
-  with a VLANs attached for the ceph storage role.
+  with a VLANs attached for the controller role.
 
 parameters:
   ControlPlaneIp:
@@ -34,6 +34,30 @@ parameters:
     description: The ovs_options string for the bond interface. Set things like
                  lacp=active and/or bond_mode=balance-slb using this option.
     type: string
+  ExternalNetworkVlanID:
+    default: 10
+    description: Vlan ID for the external network traffic.
+    type: number
+  InternetNetworkVlanID:
+    default: 11
+    description: Vlan ID for the Internet network traffic.
+    type: number
+  InternodosNetworkVlanID:
+    default: 12
+    description: Vlan ID for the Internodos network traffic.
+    type: number
+  BackendNetworkVlanID:
+    default: 13
+    description: Vlan ID for the Backend network traffic.
+    type: number
+  CorporateNetworkVlanID:
+    default: 14
+    description: Vlan ID for the Corporate network traffic.
+    type: number
+  InternalApiNetworkVlanID:
+    default: 20
+    description: Vlan ID for the internal_api network traffic.
+    type: number
   StorageNetworkVlanID:
     default: 30
     description: Vlan ID for the storage network traffic.
@@ -42,11 +66,16 @@ parameters:
     default: 40
     description: Vlan ID for the storage mgmt network traffic.
     type: number
+  TenantNetworkVlanID:
+    default: 50
+    description: Vlan ID for the tenant network traffic.
+    type: number
+  ExternalInterfaceDefaultRoute:
+    default: '10.0.0.1'
+    description: default route for the external network
+    type: string
   ControlPlaneSubnetCidr: # Override this via parameter_defaults
     default: '24'
-    description: The subnet CIDR of the control plane network.
-    type: string
-  ControlPlaneDefaultRoute: # Override this via parameter_defaults
     description: The subnet CIDR of the control plane network.
     type: string
   DnsServers: # Override this via parameter_defaults
@@ -66,10 +95,18 @@ resources:
         os_net_config:
           network_config:
             -
-              type: interface
-              name: nic1
+              type: linux_bond
+              name: team0
               use_dhcp: false
+              bonding_options: "mode=active-backup"
               dns_servers: {get_param: DnsServers}
+              members:
+                -
+                  type: interface
+                  name: nic3
+                - 
+                  type: interface
+                  name: nic4
               addresses:
                 -
                   ip_netmask:
@@ -86,34 +123,71 @@ resources:
                   next_hop: {get_param: ControlPlaneDefaultRoute}
             -
               type: ovs_bridge
-              name: br-bond
+              name: {get_input: bridge_name}
               members:
                 -
                   type: ovs_bond
-                  name: bond1
+                  name: teqm1
                   ovs_options: {get_param: BondInterfaceOvsOptions}
                   members:
                     -
                       type: interface
-                      name: nic2
+                      name: nic1
                       primary: true
                     -
                       type: interface
-                      name: nic3
+                      name: nic2
                 -
                   type: vlan
-                  device: bond1
+                  device: team1
+                  vlan_id: {get_param: ExternalNetworkVlanID}
+                  addresses:
+                    -
+                      ip_netmask: {get_param: ExternalIpSubnet}
+                -
+                  type: vlan
+                  device: team1
+                  vlan_id: {get_param: InternetNetworkVlanID}
+                -
+                  type: vlan
+                  device: team1
+                  vlan_id: {get_param: InternodosNetworkVlanID}
+                -
+                  type: vlan
+                  device: team1
+                  vlan_id: {get_param: BackendNetworkVlanID}
+                -
+                  type: vlan
+                  device: team1
+                  vlan_id: {get_param: CorporateNetworkVlanID}
+                -
+                  type: vlan
+                  device: team1 
+                  vlan_id: {get_param: InternalApiNetworkVlanID}
+                  addresses:
+                    -
+                      ip_netmask: {get_param: InternalApiIpSubnet}
+                -
+                  type: vlan
+                  device: team1
                   vlan_id: {get_param: StorageNetworkVlanID}
                   addresses:
-                  -
-                    ip_netmask: {get_param: StorageIpSubnet}
+                    -
+                      ip_netmask: {get_param: StorageIpSubnet}
                 -
                   type: vlan
-                  device: bond1
+                  device: team1
                   vlan_id: {get_param: StorageMgmtNetworkVlanID}
                   addresses:
-                  -
-                    ip_netmask: {get_param: StorageMgmtIpSubnet}
+                    -
+                      ip_netmask: {get_param: StorageMgmtIpSubnet}
+                -
+                  type: vlan
+                  device: team1
+                  vlan_id: {get_param: TenantNetworkVlanID}
+                  addresses:
+                    -
+                      ip_netmask: {get_param: TenantIpSubnet}
 
 outputs:
   OS::stack_id:

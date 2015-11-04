@@ -1,80 +1,56 @@
-<domain type='kvm'>
+<domain type="kvm">
   <name>overcloud-controller</name>
-  <uuid>82816857-b110-4c62-8164-27fece01546f</uuid>
-  <memory unit='KiB'>104857600</memory>
-  <currentMemory unit='KiB'>104857600</currentMemory>
-  <vcpu placement='static'>24</vcpu>
+  <uuid>c525ad61-dee0-47db-9f23-21b485a66c4d</uuid>
+  <memory>104857600</memory>
+  <currentMemory>104857600</currentMemory>
+  <vcpu>24</vcpu>
   <os>
-    <type arch='x86_64' machine='pc-i440fx-rhel7.1.0'>hvm</type>
-    <boot dev='network'/>
+    <type arch="x86_64">hvm</type>
+    <boot dev="network"/>
   </os>
   <features>
     <acpi/>
     <apic/>
     <pae/>
   </features>
-  <cpu mode='host-passthrough'>
-  </cpu>
-  <clock offset='utc'>
-    <timer name='rtc' tickpolicy='catchup'/>
-    <timer name='pit' tickpolicy='delay'/>
-    <timer name='hpet' present='no'/>
+  <cpu mode="host-passthrough"/>
+  <clock offset="utc">
+    <timer name="rtc" tickpolicy="catchup"/>
+    <timer name="pit" tickpolicy="delay"/>
+    <timer name="hpet" present="no"/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>restart</on_crash>
   <devices>
     <emulator>/usr/libexec/qemu-kvm</emulator>
-    <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2'/>
-      <source file='/var/lib/libvirt/images/overcloud-controller.qcow2'/>
-      <target dev='vda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2"/>
+      <source file="/var/lib/libvirt/images/overcloud-controller.qcow2"/>
+      <target dev="sda" bus="sata"/>
     </disk>
-    <controller type='usb' index='0' model='ich9-ehci1'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x7'/>
+    <controller type="usb" index="0" model="ich9-ehci1"/>
+    <controller type="usb" index="0" model="ich9-uhci1">
+      <master startport="0"/>
     </controller>
-    <controller type='usb' index='0' model='ich9-uhci1'>
-      <master startport='0'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0' multifunction='on'/>
+    <controller type="usb" index="0" model="ich9-uhci2">
+      <master startport="2"/>
     </controller>
-    <controller type='usb' index='0' model='ich9-uhci2'>
-      <master startport='2'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x1'/>
+    <controller type="usb" index="0" model="ich9-uhci3">
+      <master startport="4"/>
     </controller>
-    <controller type='usb' index='0' model='ich9-uhci3'>
-      <master startport='4'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x2'/>
-    </controller>
-    <controller type='pci' index='0' model='pci-root'/>
-    <interface type='direct'>
+    <interface type="direct">
+      <source dev="team0" mode="bridge"/>
       <mac address='52:54:00:d4:c0:de'/>
-      <source dev='team0' mode='bridge'/>
-      <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+      <model type="virtio"/>
     </interface>
-    <interface type='direct'>
-      <mac address='52:54:00:d4:c0:df'/>
-      <source dev='team1.3223' mode='passthrough'/>
-      <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    <interface type="bridge">
+      <source dev="br-control" mode="bridge"/>
+      <mac address="52:54:00:b6:e2:ea"/>
+      <model type="virtio"/>
     </interface>
-    <serial type='pty'>
-      <target port='0'/>
-    </serial>
-    <console type='pty'>
-      <target type='serial' port='0'/>
-    </console>
-    <input type='tablet' bus='usb'/>
-    <input type='mouse' bus='ps2'/>
-    <input type='keyboard' bus='ps2'/>
-    <graphics type='vnc' port='-1' autoport='yes'/>
-    <video>
-      <model type='cirrus' vram='16384' heads='1'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
-    </video>
-    <memballoon model='virtio'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
-    </memballoon>
+    <input type="tablet" bus="usb"/>
+    <graphics type="vnc" port="-1"/>
+    <console type="pty"/>
   </devices>
 </domain>

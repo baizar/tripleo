@@ -1,17 +1,13 @@
 heat_template_version: 2015-04-30
 
 description: >
-  Software Config to drive os-net-config to configure VLANs for the
-  compute role.
+  Software Config to drive os-net-config with 2 bonded nics on a bridge
+  with a VLANs attached for the swift storage role.
 
 parameters:
   ControlPlaneIp:
     default: ''
     description: IP address/subnet on the ctlplane network
-    type: string
-  ExternalIpSubnet:
-    default: ''
-    description: IP address/subnet on the external network
     type: string
   InternalApiIpSubnet:
     default: ''
@@ -25,9 +21,10 @@ parameters:
     default: ''
     description: IP address/subnet on the storage mgmt network
     type: string
-  TenantIpSubnet:
+  BondInterfaceOvsOptions:
     default: ''
-    description: IP address/subnet on the tenant network
+    description: The ovs_options string for the bond interface. Set things like
+                 lacp=active and/or bond_mode=balance-slb using this option.
     type: string
   InternalApiNetworkVlanID:
     default: 20
@@ -37,9 +34,9 @@ parameters:
     default: 30
     description: Vlan ID for the storage network traffic.
     type: number
-  TenantNetworkVlanID:
-    default: 50
-    description: Vlan ID for the tenant network traffic.
+  StorageMgmtNetworkVlanID:
+    default: 40
+    description: Vlan ID for the storage mgmt network traffic.
     type: number
   ControlPlaneSubnetCidr: # Override this via parameter_defaults
     default: '24'
@@ -65,10 +62,18 @@ resources:
         os_net_config:
           network_config:
             -
-              type: ovs_bridge
-              name: {get_input: bridge_name}
+              type: linux_bond
+              name: team0
               use_dhcp: false
+              bonding_options: "mode=active-backup"
               dns_servers: {get_param: DnsServers}
+              members:
+                -
+                  type: interface
+                  name: nic3
+                - 
+                  type: interface
+                  name: nic4
               addresses:
                 -
                   ip_netmask:
@@ -83,30 +88,43 @@ resources:
                 -
                   default: true
                   next_hop: {get_param: ControlPlaneDefaultRoute}
+            -
+              type: ovs_bridge
+              name: br-bond
               members:
                 -
-                  type: interface
-                  name: nic1
-                  # force the MAC address of the bridge to this interface
-                  primary: true
+                  type: ovs_bond
+                  name: team1
+                  ovs_options: {get_param: BondInterfaceOvsOptions}
+                  members:
+                    -
+                      type: interface
+                      name: nic1
+                      primary: true
+                    -
+                      type: interface
+                      name: nic2
                 -
                   type: vlan
+                  device: team1
                   vlan_id: {get_param: InternalApiNetworkVlanID}
                   addresses:
-                  -
-                    ip_netmask: {get_param: InternalApiIpSubnet}
+                    -
+                      ip_netmask: {get_param: InternalApiIpSubnet}
                 -
                   type: vlan
+                  device: team1
                   vlan_id: {get_param: StorageNetworkVlanID}
                   addresses:
-                  -
-                    ip_netmask: {get_param: StorageIpSubnet}
+                    -
+                      ip_netmask: {get_param: StorageIpSubnet}
                 -
                   type: vlan
-                  vlan_id: {get_param: TenantNetworkVlanID}
+                  device: team1
+                  vlan_id: {get_param: StorageMgmtNetworkVlanID}
                   addresses:
-                  -
-                    ip_netmask: {get_param: TenantIpSubnet}
+                    -
+                      ip_netmask: {get_param: StorageMgmtIpSubnet}
 
 outputs:
   OS::stack_id:

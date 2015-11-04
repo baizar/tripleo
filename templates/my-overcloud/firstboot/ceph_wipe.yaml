@@ -1,0 +1,22 @@
+heat_template_version: 2014-10-16
+
+resources:
+  userdata:
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: wipe_ceph_disk}
+
+  wipe_ceph_disk:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      config: |
+        #!/bin/bash
+        /bin/hostnamectl | grep 'hostname' | grep 'cephstorage' -q ;
+        if [ $? == 0 ]; then
+        for i in {b,c,d,e,f,g,h,i,k,l,m,n}; do sgdisk -Z /dev/sd${i};done
+        fi
+
+outputs:
+  OS::stack_id:
+    value: {get_resource: userdata}
