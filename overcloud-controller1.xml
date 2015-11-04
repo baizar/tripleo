@@ -44,49 +44,9 @@
       <mac address='52:54:00:d4:c0:da'/>
       <model type="virtio"/>
     </interface>
-    <interface type="direct">
-      <source dev="team1.3218" mode="bridge"/>
+    <interface type="bridge">
+      <source dev="br-control" mode="bridge"/>
       <mac address="52:54:00:cd:52:c9"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3221" mode="bridge"/>
-      <mac address="52:54:00:07:6c:3f"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3222" mode="bridge"/>
-      <mac address="52:54:00:b2:93:70"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3223" mode="bridge"/>
-      <mac address="52:54:00:2d:1d:ac"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3224" mode="bridge"/>
-      <mac address="52:54:00:c2:b2:75"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3225" mode="bridge"/>
-      <mac address="52:54:00:d3:a3:9a"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3228" mode="bridge"/>
-      <mac address="52:54:00:ab:a5:62"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3274" mode="bridge"/>
-      <mac address="52:54:00:0e:a0:6a"/>
-      <model type="virtio"/>
-    </interface>
-    <interface type="direct">
-      <source dev="team1.3712" mode="bridge"/>
-      <mac address="52:54:00:dd:3d:fb"/>
       <model type="virtio"/>
     </interface>
     <input type="tablet" bus="usb"/>
